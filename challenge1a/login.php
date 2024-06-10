@@ -1,8 +1,9 @@
 <?php 
     session_start();
     if (isset($_SESSION['user'])){
-        header("Location: index.php");
+        echo "<script>window.location.replace('https://mdphuc.000webhostapp.com/index.php')</script>";
     }
+    // session_destroy();
 ?> 
 <head>
   <link rel="stylesheet" href="index.css">
@@ -25,9 +26,8 @@
             $password = $_POST["password"];
             $check = $db->check_user($username, $password);
             if ($check[1] == TRUE){
-                session_start();
                 $_SESSION['user'] = $check[0];
-                header("Location: index.php");
+                echo "<script>window.location.replace('https://mdphuc.000webhostapp.com/index.php')</script>";
             }
             $db->close();
         }
