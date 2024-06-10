@@ -1,19 +1,20 @@
-<h1>Dashboard</h1>
 <?php 
     session_start();
     if (!isset($_SESSION['user'])){
-        header("Location: ./login.php");
-    }
-    $current = $_SESSION['user'];
-    require_once './db.php';
-    $db = new DB();
-    $db->connect();
-    $role = $db->check_role($current);
-    $db->close();
-    if ($role == "teacher"){
-        echo "Chào giáo viên <b>$current</b>";
+        echo "<script>window.location.replace('https://mdphuc.000webhostapp.com/login.php')</script>";
     }else{
-        echo "Chào học sinh <b>$current</b>";
+        echo "<h1>Dashboard</h1>";
+        $current = $_SESSION['user'];
+        require_once './db.php';
+        $db = new DB();
+        $db->connect();
+        $role = $db->check_role($current);
+        $db->close();
+        if ($role == "teacher"){
+            echo "Chào giáo viên <b>$current</b>";
+        }else{
+            echo "Chào học sinh <b>$current</b>";
+        }    
     }
 ?>
 <br>
@@ -37,7 +38,7 @@
 <?php
     if (isset($_POST["logout"])){
         session_destroy();
-        header("Location: ./login.php");
+        echo "<script>window.location.replace('https://mdphuc.000webhostapp.com/login.php')</script>";
     }
 ?>
 <br><br>
