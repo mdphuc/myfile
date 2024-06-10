@@ -4,6 +4,9 @@
 
 <?php
     session_start();
+    if (!isset($_SESSION["user"])){
+        echo "<script>window.location.replace('https://mdphuc.000webhostapp.com/login.php')</script>";
+    }
 ?>
 
 <table id="table_user" style='margin-top:50px'>
