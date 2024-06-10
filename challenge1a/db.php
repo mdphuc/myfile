@@ -2,10 +2,10 @@
     class DB{
         private $DEFAULT_PWD = "123456a@A";
 
-        private $hostname = "localhost:3306";
-        private $username = "root";
-        private $password = "";
-        private $db = "mydb";
+        private $hostname = "localhost";
+        private $username = "id22297918_mdphuc";
+        private $password = "MdPhUC2o05@";
+        private $db = "id22297918_mydb";
         private $conn;
         
         function connect(){
@@ -23,15 +23,16 @@
             $check_query = "SELECT * FROM accounts WHERE username='".$username."' AND password='".$password."'";
             // echo $username;
             // echo $password;
-            // echo $check_query;
             $check_account = mysqli_query($this->conn, $check_query);
             $output = array();
             if (!$check_account){
                 die("".mysqli_error($check));
                 exit();
             }else{
-                if (mysqli_num_rows($check_account) > 0){
-                    array_push($output, mysqli_fetch_row($check_account)[2]);
+                $user_query = "SELECT * FROM accounts WHERE username='".$username."'";
+                $user = mysqli_query($this->conn, $user_query);
+                if (mysqli_num_rows($user) > 0){
+                    array_push($output, mysqli_fetch_row($user)[2]);
                     array_push($output, TRUE);
                     return $output;
                 }else{
