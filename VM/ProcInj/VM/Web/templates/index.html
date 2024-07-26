@@ -1,0 +1,40 @@
+<h1>G++ debug</h1>
+ 
+<form action="{{url_for('compile')}}" method="post">
+  <div style="display: inline;">
+    <input style="width: 40px;" value="g++">
+    <input name="command">
+    <input type="submit" value="Submit">
+  </div>
+</form>
+
+
+
+<form action="{{url_for('save')}}" method="post" enctype=multipart/form-data>
+  <input type=file name=file>
+  <input type=submit value=Upload>
+</form>
+
+{% if error == "true" %}
+  <b style="color: red;">Something wrong!</b>
+{% elif error == "false" %}
+  <b style="color: green;">Succeed!</b>
+{% endif %}
+
+<br>
+<b style="color: red;">{{msg}}</b>
+
+<p>./Web/compiled</p>
+
+{% for cf in compiled_file %}
+  <form action="{{url_for('download')}}" method="POST">
+    <input name="filename" value="{{cf}}" hidden>
+    <input type="submit" value="{{cf}}">
+  </form>
+{% endfor %}
+
+<!-- <form action="{{url_for('download')}}" method="POST">
+  <input name="filename" value="hidden/information.zip" hidden>
+  <input type="submit" value="hidden/information.zip">
+</form> -->
+
