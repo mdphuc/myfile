@@ -8,7 +8,7 @@ FILTER_WORD = ["socket", "wsa", "connect", "sock_stream", "af_inet"]
 
 def examine_file(filename):
   return '.' in filename and filename.rsplit('.', 1)[1].lower() in EXAMINING_EXTENSIONS
-
+ 
 parser = argparse.ArgumentParser()
 
 parser.add_argument(dest = 'name')

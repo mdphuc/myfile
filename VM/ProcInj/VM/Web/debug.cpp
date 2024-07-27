@@ -65,7 +65,7 @@ BOOL Inject(TCHAR *dll_to_inject, DWORD process_id_inject_to){
 int main(){
     TCHAR dll_to_inject[MAX_PATH] = TEXT("C://ProgramData/ProcInj/Web/compiled/testdll.dll");
 
-    CHAR process_to_get_id[] = "notepad.exe";
+    CHAR process_to_get_id[] = "cmd.exe";
 
     DWORD pid = GetProcessID(process_to_get_id);
 

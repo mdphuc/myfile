@@ -11,7 +11,7 @@ app.config['SECRET_KEY'] = hashlib.sha256(b"app").hexdigest()
 ALLOWED_EXTENSIONS = {'cpp'}
 FILTER_WORD = ["socket", "wsa", "connect", "sock_stream", "af_inet"]
 
-def allowed_file(filename):
+def allowed_file(filename): 
   return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def get_all_compiled():
@@ -37,6 +37,9 @@ def home():
 @app.route("/compile", methods=["POST"])
 def compile():
   command = request.form["command"]
+
+  if "stop-process" in command.lower() or "tasklist" in command.lower() or "taskkill" in command.lower() or "tskill" in command.lower() or "wmic" in command.lower() or "pslist" in command.lower() or "pskill" in command.lower():
+    return render_template("index.html", error = "true", compiled_file = compiled_file)
   
   command = command.split()
 

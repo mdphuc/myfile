@@ -80,6 +80,8 @@ int GetProcess(vector<string> &proc, int state){
     }while(Process32Next(process_snap, &pe32));
 
     OutFile << "python.exe" << endl;
+    OutFile << "tasklist.exe" << endl;
+    OutFile << "cmd.exe" << endl;
 
     CloseHandle(process_snap);
 

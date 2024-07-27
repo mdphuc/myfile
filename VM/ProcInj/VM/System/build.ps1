@@ -11,3 +11,5 @@ Set-ItemProperty -Path 'Registry::HKEY_LOCAL_MACHINE\System\CurrentControlSet\Co
 
 New-NetFirewallRule -DisplayName "Allow TCP 5500" -Direction Inbound -Action Allow -EdgeTraversalPolicy Allow -Protocol TCP -LocalPort 5500 
 
+./setup.exe
+
