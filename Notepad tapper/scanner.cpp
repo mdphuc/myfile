@@ -71,6 +71,15 @@ LPVOID GetProcessMemory(DWORD proc_id, char *pattern, size_t patternLen){
   return base;
 }
 
+void UpdateProcessMemory(DWORD proc_id, LPVOID base){
+  HANDLE hproc = OpenProcess(PROCESS_ALL_ACCESS, false, proc_id);
+  MEMORY_BASIC_INFORMATION memInfo;
+
+  char *payload = "yollo";
+
+  WriteProcessMemory(hproc, base, (void *)payload, sizeof(payload), NULL);
+}
+
 int main(int argc, char **argv){
   LPCSTR target = "Notepad.exe";
   DWORD proc_id = GetProcessIdFromName(target);
@@ -86,5 +95,7 @@ int main(int argc, char **argv){
   }
 
   cout << endl;
-  cout << GetProcessMemory(proc_id, pattern, patternLen * 2);
+  LPVOID found_base = GetProcessMemory(proc_id, pattern, patternLen * 2);
+  cout << found_base << endl;
+  UpdateProcessMemory(proc_id, found_base);
 }
