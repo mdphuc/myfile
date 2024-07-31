@@ -15,6 +15,4 @@ print_16bit:
 halt:
   hlt
 
-; message1:
-;   db "Hello World", 0
 
