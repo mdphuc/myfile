@@ -4,6 +4,8 @@
     "iostream": "cpp",
     "string": "cpp",
     "compare": "cpp",
-    "cstdint": "cpp"
+    "cstdint": "cpp",
+    "numbers": "cpp",
+    "cstdlib": "cpp"
   }
 }

@@ -89,6 +89,8 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lparam){
 
     string windows_title(buffer);
 
+    cout << windows_title << endl;
+
     if (windows_title == "*Untitled - Notepad" || windows_title == "Untitled - Notepad"){
         notepad_hwnd = hwnd;
         return false;
@@ -144,7 +146,7 @@ void Prepare(){
 
         buffer[2*i] = v;
         buffer[2*i + 1] = 0x0;
-        PostMessage(FindWindowEx(notepad_hwnd, NULL, "Edit", NULL), WM_CHAR, v, 0);
+        PostMessage(FindWindowExA(notepad_hwnd, NULL, "Edit", NULL), WM_CHAR, v, 0);
     }
 
     Sleep(5000);
@@ -181,7 +183,7 @@ int main(int argc, char **argv){
     Prepare();
     cout << "Finish pre-run process" << endl;
 
-    LPCSTR target = "notepad.exe";
+    LPCSTR target = "Notepad.exe";
     DWORD proc_id = GetProcessIdFromName(target);
     cout << proc_id << endl;
     cout << "-----------------------------------" << endl;
@@ -193,5 +195,6 @@ int main(int argc, char **argv){
     cout << found_base << endl;
     
     Display(proc_id, found_base);
+
 
 }
