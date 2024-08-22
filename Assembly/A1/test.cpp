@@ -1,19 +1,11 @@
-#include <stdio.h>
 
-int power2( int num, int power );
+char code[];
 
-int main( void )
-{
-    printf_s( "3 times 2 to the power of 5 is %d\n", \
-              power2( 3, 5) );
-}
-int power2( int num, int power )
-{
-   __asm
-   {
-      mov eax, num    ; Get first argument
-      mov ecx, power  ; Get second argument
-      shl eax, cl     ; EAX = EAX * ( 2 to the power of CL )
-   }
-   // Return with result in EAX
+int main(int argc, char **argv) {
+  int (*func)();             // function pointer
+  func = (int (*)()) code;   // func points to our shellcode
+  (int)(*func)();            // execute a function code[]
+  // if our program returned 0 instead of 1,
+  // so our shellcode worked
+  return 1;
 }

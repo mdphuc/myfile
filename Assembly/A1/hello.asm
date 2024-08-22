@@ -1,7 +1,7 @@
-extern GetStdHandle
-; extern WriteFile
+extern CreateFileA
 extern MessageBoxA
 extern ExitProcess
+extern OpenFile
 
 section .rodata
     stdout_query equ -11
@@ -9,29 +9,41 @@ section .rodata
 section .data
     stdout dw 0
     bytes_written dw 0
-    msg db "Hello World!", 0
+    msg db "Hello Worldddddddddddd!", 0
     msg_len equ $ - msg
+    filename  db "yo.txt", 0
+    filename2 db "yo2.txt", 0
+
 
 section .text
 
 global main
 
 main:
-    ; mov rcx, stdout_query
-    ; call GetStdHandle
+    sub rsp, 8
+    sub rsp, 64
 
-    ; mov  rcx, rax
-    ; mov  rdx, msg
-    ; mov  r8, msg_len
-    ; mov  r9, bytes_written
-    ; push 0
-    ; call WriteFile
+    mov rcx, filename2
+    mov rdx, 1
+    mov r8, 0
+    xor r9, r9
+    push 2
+    push 0x80
+    push 0
+    call CreateFileA
 
-    mov rcx, 0
+    pop rbx
+    pop rcx
+    pop rdx
+
+    xor rbx, rbx
     xor rcx, rcx
-    lea rdx, msg
-    lea r8, msg
-    mov r9d, 0
+    xor rdx, rdx
+    
+    xor rcx, rcx
+    lea rdx, [rel msg]
+    lea r8, [rel msg]
+    mov r9, 0
     call MessageBoxA
 
     xor rcx, rcx

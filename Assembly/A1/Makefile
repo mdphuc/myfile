@@ -1,4 +1,4 @@
 setup:
-	nasm -f win64 hello.asm -o hello.o
-	gcc hello.o -o hello.exe -lkernel32
-	./hello.exe
+	nasm -f win64 shellcode.asm -o shellcode.o
+	gcc shellcode.o -o shellcode.exe
+	./shellcode.exe
