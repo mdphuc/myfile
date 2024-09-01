@@ -1,8 +1,8 @@
 # Recon_upx: The analysis of UPX-packed file
 
 *Aug 12 2024*
-
-#### File: <a href="./File/recon_upx">recon_upx</a>
+ 
+**File: <a href="../File/recon_upx">recon_upx</a>**
 
 In this blog post, I'll be discussing the use of IDA in performing static and dynamic analysis and unpacking a malware file. For more information related to IDA, visit <a href="https://hex-rays.com/ida-pro/" target="_blank">https://hex-rays.com/ida-pro/</a>. IDA example: <a href="https://www.hackers-arise.com/post/2017/06/22/Reverse-Engineering-Malware-Part-3-IDA-Pro-Introduction" target="_blank">https://www.hackers-arise.com/post/2017/06/22/Reverse-Engineering-Malware-Part-3-IDA-Pro-Introduction</a>
 
@@ -25,4 +25,4 @@ Our task here is first to unpack the file, then to analyze the file. For unpacki
 
 According to readelf's output, once the program runs, EIP will first point to the entry point address ```0x403858``` (which is the address of ```start```)
 
-Going through many instructions below, 
+Going through many instructions below, we can see sys_write (wrtie to file, screen, memory,...), sys_open
