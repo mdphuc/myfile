@@ -25,4 +25,47 @@ Our task here is first to unpack the file, then to analyze the file. For unpacki
 
 According to readelf's output, once the program runs, EIP will first point to the entry point address ```0x403858``` (which is the address of ```start```)
 
-Going through many instructions below, we can see sys_write (wrtie to file, screen, memory,...), sys_open
+Going through many instructions below, we can see ````sys_write``` (write to file, screen, memory, ...), ```sys_open``` (open file or virtual memory), ```sys_mmap``` (allocate virtual memory space), ```sys_mprotect``` (works like VirtualProtect Windows api to change permission of that virtual memory space). It seems like the program is trying to decompress itself into its own virtual memory.
+
+<img src="../Images/recon_upx_ida2.png"><br><br>
+<img src="../Images/recon_upx_ida3.png">
+
+Notice that program continues by doing ```jmp r13```. We'll set a breakpoint here, ```0x403AFC```, to observe corresponding actions.
+
+<img src="../Images/recon_upx_ida4.png">
+
+Look at segments at this breakpoint, we can see recon_upx has ```0x5000``` in its virtual memory space from ```0x7FFFF7FF4000``` to ```0x7FFFF7FF9000``` containing DATA and CODE
+
+<img src="../Images/recon_upx_ida5.png">
+
+Hex dump we have
+
+<img src="../Images/recon_upx_ida6.png">
+
+We can presume that the program will then unpack code inside this section and write to its base segments. Continue execution we reach this point, ```0x7FFFF7FF7C66```, followed by instruction at ```0x408C01```, where there are```syscall exit``` and ```retn```.
+
+<img src="../Images/recon_upx_ida10.png"><br><br>
+
+<img src="../Images/recon_upx_ida11.png"><br><br>
+
+Debug until RIP reaches ```jmp r12```, we have segments table like this
+
+<img src="../Images/recon_upx_ida13.png">
+
+Segments of recon_upx have been changed, we can presume the unpacking process has finished
+
+Continue debuging we'll hit ```__libc_start_main```, and if we'll let the program continue running, main malicious process will be deployed
+
+<img src="../Images/recon_upx_ida14.png">
+
+At ```start```, we saw recon_upx spans from ```0x400000``` to ```0x609308```
+
+<img src="../Images/recon_upx_ida15.png">
+
+When we hit ```jmp r12``` as shown above, we can dump memory out using the following python code
+
+<img src="../Images/recon_upx_ida16.png">
+
+Once file is dumped, we can then try to fix file header and segments. Then we'll have complete file, which can further be analyzed by IDA (pseudocode).
+
+This dump memory process can also be done using IDA pro and its plugin <a href="https://github.com/WPeace-HcH/ElfDumper" target="_blank">https://github.com/WPeace-HcH/ElfDumper</a>. This plugin allows more efficient dumping and no need to worry about fixing file headers and segments

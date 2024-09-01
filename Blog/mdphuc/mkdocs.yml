@@ -2,7 +2,7 @@ site_name: mdphuc
 site_author: Phuc Mai (mdphuc)
 nav:
   - Home: 
-    - About: about.md
+    - About: index.md
   - Blog:
     - I created a Windows 10 Vuln machine: 2024_7_27_procinj.md
     - x86 and x86_64 Function Hooking: 
