@@ -143,7 +143,13 @@ I'll not discuss how to set up socket server and client using windows api here, 
 
 Putting it all together, <a href="https://github.com/mdphuc/myfile/blob/main/Notepad%20tapper/keyboardhook_dll.cpp">dll</a> and <a href="https://github.com/mdphuc/myfile/blob/main/Notepad%20tapper/server.cpp">server</a> code can be found in my Github repo
 
-I'll not discuss in detail the logic of game shooter here, but the code for it can be found in my <a href="">Github</a> repo as well
+I'll not discuss in detail the logic of game shooter here, but the code for it can be found in my <a href="https://github.com/mdphuc/myfile/tree/main/Notepad%20tapper/game_logic">Github</a> repo as well
+
+The full code can be found <a href="https://github.com/mdphuc/myfile/tree/main/Notepad%20tapper">here</a>.
+
+Here's some result:
+
+<img src="./Images/notepad_tapper_6.gif">
 
 
 
