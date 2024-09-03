@@ -1,0 +1,13 @@
+site_name: mdphuc
+site_author: Phuc Mai (mdphuc)
+nav:
+  - Home: 
+    - About: index.md
+  - Blog:
+    - I created a Windows 10 Vuln machine: 2024_7_27_procinj.md
+    - x86 and x86_64 Function Hooking: 
+      - Introduction: 2024_7_28_hook_api.md
+    - Recon_upx The analysis of UPX-packed file: 2024_8_12_recon_upx_analysis.md
+
+
+theme: readthedocs
