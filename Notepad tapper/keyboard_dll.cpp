@@ -57,7 +57,7 @@ __declspec(dllexport) LRESULT CALLBACK HookProcedure(int nCode, WPARAM wParam, L
 
     }
     
-  
+   
   return 0;
 }
 
