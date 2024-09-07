@@ -137,7 +137,7 @@ void InstallHook(DWORD thread_id){
 
   UnhookWindowsHookEx(keyboardhook);
 }
-```
+``` 
 
 I'll not discuss how to set up socket server and client using windows api here, but this documentation might help: <a href="https://learn.microsoft.com/en-us/windows/win32/winsock/complete-client-code">Socket Client</a> and <a href="https://learn.microsoft.com/en-us/windows/win32/winsock/complete-server-code?source=recommendations">Socket Server</a>
 
