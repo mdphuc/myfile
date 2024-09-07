@@ -138,6 +138,62 @@ void InstallHook(DWORD thread_id){
   UnhookWindowsHookEx(keyboardhook);
 }
 ```
+## Write dll
+
+One can compile dll from C++ or C code; basically the way C++ and C code works and written is the same; however, with C++, we have to wrap the following around our exported function:
+
+```cpp
+#ifdef __cplusplus   
+extern "C" {         
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+```
+
+Funtion to be exported can be defined like this:
+
+```cpp
+__declspec(dllexport) LRESULT CALLBACK name_of_function(param)
+```
+
+Within dll file, `DllMain` is the entrypoint. `DllMain` can be defined like this
+
+```cpp
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
+```
+
+Exported function can be run when dll is attached or detached to or from a process or thread using the following template:
+
+```cpp
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved){
+    switch(fdwReason){ 
+        case DLL_PROCESS_ATTACH: 
+            break;
+
+        case DLL_THREAD_ATTACH:
+            break;
+
+        case DLL_THREAD_DETACH:
+            break;
+
+        case DLL_PROCESS_DETACH:
+            break;
+    }
+    return TRUE;
+}
+```
+
+Dll can be compiled by
+
+```cpp
+g++ name.cpp -shared -o name.dll
+```
+
+Sometimes, additional library flag needs to be added to compile, for example `-lws2_32` for socket use
+
+## Wrap up
 
 I'll not discuss how to set up socket server and client using windows api here, but this documentation might help: <a href="https://learn.microsoft.com/en-us/windows/win32/winsock/complete-client-code">Socket Client</a> and <a href="https://learn.microsoft.com/en-us/windows/win32/winsock/complete-server-code?source=recommendations">Socket Server</a>
 
