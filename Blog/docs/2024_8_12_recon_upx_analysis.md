@@ -69,3 +69,5 @@ When we hit ```jmp r12``` as shown above, we can dump memory out using the follo
 Once file is dumped, we can then try to fix file header and segments. Then we'll have complete file, which can further be analyzed by IDA (pseudocode).
 
 This dump memory process can also be done using IDA pro and its plugin <a href="https://github.com/WPeace-HcH/ElfDumper" target="_blank">https://github.com/WPeace-HcH/ElfDumper</a>. This plugin allows more efficient dumping and no need to worry about fixing file headers and segments
+
+After this, we can load the dumped file in IDA again and use pseudocode to analyze the functionality of recon_upx
