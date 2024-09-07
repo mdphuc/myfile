@@ -11,7 +11,7 @@ extern "C" {
 __declspec(dllexport) BYTE *addr;
 __declspec(dllexport) BYTE originalBytes[12] = {0};
 
-__declspec(dllexport) HANDLE CtrlC(UINT uFormat, HANDLE hMem);
+__declspec(dllexport) HANDLE CtrlC(UINT uFormat, HANDLE hMem); 
 
 __declspec(dllexport) char* UTF16Convert(char* target){
     size_t patternLen = strlen(target); 
@@ -85,7 +85,7 @@ __declspec(dllexport) HANDLE CtrlC(UINT uFormat, HANDLE hMem){
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved){
     switch(fdwReason){ 
-        case DLL_PROCESS_ATTACH:
+        case DLL_PROCESS_ATTACH: 
             // mbox(L"Run");
             addr = (BYTE *)GetProcAddress(GetModuleHandleA("user32.dll"), "SetClipboardData");
             SetHookCtrlC();

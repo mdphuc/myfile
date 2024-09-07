@@ -151,7 +151,7 @@ void Prepare(){
     for (int i = 0; i < charCount; i++){
         // char v = 0x41 + char(rand() % 26);
         char v = 0x2e;
-
+ 
         buffer[2*i] = v;
         buffer[2*i + 1] = 0x0;
         PostMessage(FindWindowExA(notepad_hwnd, NULL, "Edit", NULL), WM_CHAR, v, 0);
