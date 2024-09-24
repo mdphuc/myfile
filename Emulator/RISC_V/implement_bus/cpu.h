@@ -28,7 +28,7 @@ class CPU{
         }
 
         uint64_t wrapping_add(uint64_t a1, uint64_t a2){
-            if ((a1 + a2) > 0xffffffff){
+            if ((a1 + a2) > 0xffffffffffffffff){
                 exit(0);
                 return 0;
             }else{

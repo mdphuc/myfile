@@ -10,7 +10,7 @@ int main(int argc, char **args){
     int i = 0;
 
     while(1){
-        cout << i << endl;
+        cout << i << "  ";
         uint32_t inst = cpu.Fetch<uint32_t>();
         
         if (!cpu.Execute<uint32_t>(inst)){
