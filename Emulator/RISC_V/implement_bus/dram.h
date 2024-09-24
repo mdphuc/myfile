@@ -102,11 +102,11 @@ class DRAM{
 
             fread(buffer, fileLen + 1, 1, file);
 
-            for (int i=0; i<fileLen; i+=2) {
-                if (i%16==0) printf("\n%.8x: ", i);
-                printf("%02x%02x ", *(buffer+i), *(buffer+i+1));
-            }
-            printf("\n");
+            // for (int i=0; i<fileLen; i+=2) {
+            //     if (i%16==0) printf("\n%.8x: ", i);
+            //     printf("%02x%02x ", *(buffer+i), *(buffer+i+1));
+            // }
+            // printf("\n");
 
 
             memcpy(memory, buffer, fileLen);

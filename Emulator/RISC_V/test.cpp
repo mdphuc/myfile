@@ -6,7 +6,9 @@
 using namespace std;
 
 int main(){
-
-    char *t = "hello";
-    cout << strcmp(t, "hell1") << endl;
+    uint64_t hello;
+    cout << sizeof(0xffffffff) << endl;
+    if (1){
+        cout << "Hello" << endl;
+    }
 }
