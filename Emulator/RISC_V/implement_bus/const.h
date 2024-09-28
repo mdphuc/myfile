@@ -1,0 +1,3 @@
+
+#define MEMORY_BASE 0x80000000
+#define MEMORY_SIZE 1024 * 1024 * 1 //1 MiB
