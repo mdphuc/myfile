@@ -3,6 +3,7 @@
 #include <cstring>
 #include <time.h>
 #include <vector>
+#include "const.h"
 
 using namespace std;
 

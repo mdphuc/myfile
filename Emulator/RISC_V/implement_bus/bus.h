@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <cstring>
 #include <time.h>
+#include "const.h"
 
 #ifndef DRAM_
     #define DRAM_
