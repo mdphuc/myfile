@@ -145,7 +145,7 @@ class AES128:
     byte = []
 
     for i in range(len(target)):
-      byte.append(hex(target.encode()[i]))
+      byte.append(target.encode()[i])
 
     return np.array(byte).reshape(4, 4, order = "F")
   
@@ -156,13 +156,16 @@ class AES128:
 
     for i in range(len(w)):
       w_byte = str(w[i])[2::]
-      w[i] = self.sbox[self.hexToDecimal(w_byte[0])][self.hexToDecimal(w_byte[1])] ^ self.roundConstant[round]
+      w[i] = self.sbox[self.hexToDecimal(w_byte[0])][self.hexToDecimal(w_byte[1])]
 
-    return w
+    print(np.array([self.roundConstant[round], 0, 0, 0]))
+    print(type(w[0]))
+
+    return self.XORw(w, np.array([self.roundConstant[round], 0, 0, 0]))
   
-  def hexToDecimal(self, input):
+  def binhexToDecimal(self, input):
     temp = []
-    for i in range(4):
+    for i in range(len(input)):
       temp.append(int(input[i], 16))
     return np.array(temp)
 
@@ -172,18 +175,20 @@ class AES128:
     w2 = np.array([key[0][2], key[1][2], key[2][2], key[3][2]])
     w3 = np.array([key[0][3], key[1][3], key[2][3], key[3][3]])
 
-    print("1")
-    w4 = self.XORw(self.hexToDecimal(w0), self.hexToDecimal(self.g(w3, round)))
-    print("2")
-    w5 = self.XORw(self.hexToDecimal(w4), self.hexToDecimal(w1))
-    print("3")
-    w6 = self.XORw(self.hexToDecimal(w5), self.hexToDecimal(w2))
-    print("4")
-    w7 = self.XORw(self.hexToDecimal(w6), self.hexToDecimal(w3))
+    print(w3)
 
-    key_next_round = np.array(w4, w5, w6, w7).reshape(1, 16).reshape(4, 4, order = "F")
+    print(self.binhexToDecimal(self.g(w3, round)))
 
-    return key_next_round
+    # w4 = self.XORw(self.binhexToDecimal(w0), self.binhexToDecimal(self.g(w3, round)))
+    # # w5 = self.XORw(self.binhexToDecimal(w4), self.binhexToDecimal(w1))
+    # # w6 = self.XORw(self.binhexToDecimal(w5), self.binhexToDecimal(w2))
+    # # w7 = self.XORw(self.binhexToDecimal(w6), self.binhexToDecimal(w3))
+
+    # print(w4)
+
+    # key_next_round = np.array([w4, w5, w6, w7]).reshape(1, 16).reshape(4, 4, order = "F")
+
+    # return w4, w5, w6, w7
   
   def keySchedulingAll(self, key):
     pass
@@ -191,13 +196,13 @@ class AES128:
 
   def encrypt(self, key, plaintext):
     key_matrix = self.reshape(key)
-    # plaintext_matrix = self.reshape(plaintext)
+    plaintext_matrix = self.reshape(plaintext)
 
-    # cipher_text = plaintext_matrix
-    # cipher_text =  self.mixColumn(self.shiftRows(self.subBytes(cipher_text)))
-    # print(cipher_text)
+    cipher_text = plaintext_matrix
+    cipher_text =  self.mixColumn(self.shiftRows(self.subBytes(cipher_text)))
+    print(cipher_text)
 
-    print(self.keySchedulingPart(key_matrix, 1))
+    # print(self.keySchedulingPart(key_matrix, 1))
 
     # self.mixColumn(cipher_text)
     # print(plaintext_matrix)
