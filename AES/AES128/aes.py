@@ -44,9 +44,14 @@ class AES128:
     self.inverseMixColumnMatrix = np.array([[14, 11, 13, 9], [9, 14, 11, 13], [13, 9, 14, 11], [11, 13, 9, 14]])
 
     self.roundConstant = np.array([0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36])
+
+    self.W = [[] for i in range(10)]
   
   def decimalToBin(self, input):
-    bin_string = str(bin(input))[2::]
+    if "x" in str(input):
+      bin_string = str(bin(int(input, 16)))[2::]
+    else:
+      bin_string = str(bin(int(input)))[2::]
     bin_array = []
     bin_string_len = len(bin_string)
     while bin_string_len < 8:
@@ -76,7 +81,21 @@ class AES128:
     input_flatten = list(input.reshape(1, 16, order = "F")[0])
     for i in range(len(input_flatten)):
       input_byte = str(input_flatten[i])[2::]
+      if len(input_byte) == 1:
+        input_byte = "0" + input_byte
       input_flatten[i] = self.sbox[self.hexToDecimal(input_byte[0])][self.hexToDecimal(input_byte[1])]
+    return np.array(input_flatten).reshape(4, 4, order = "F")
+  
+  def inverseSubBytes(self, input):
+    input_flatten = list(input.reshape(1, 16, order = "F")[0])
+    for i in range(len(input_flatten)):
+      if "x" in str(input_flatten[i]):
+        input_byte = str(input_flatten[i])[2::]
+      else:
+        input_byte = str(int(input_flatten[i]))
+      if len(input_byte) == 1:
+        input_byte = "0" + input_byte
+      input_flatten[i] = self.rsbox[self.hexToDecimal(input_byte[0])][self.hexToDecimal(input_byte[1])]
     return np.array(input_flatten).reshape(4, 4, order = "F")
 
   def shiftRows(self, input):
@@ -94,6 +113,21 @@ class AES128:
         input[i][[0, 3]] = input[i][[3, 0]]
     return input
   
+  def inverseShiftRows(self, input):
+    for i in range(4):
+      if i == 0:
+        continue
+      elif i == 1:
+        input[i][[2, 3]] = input[i][[3, 2]]
+        input[i][[1, 2]] = input[i][[2, 1]]
+        input[i][[0, 1]] = input[i][[1, 0]]
+      elif i == 2:
+        input[i][[0, 2]] = input[i][[2, 0]]
+        input[i][[1, 3]] = input[i][[3, 1]]
+      elif i == 3:
+        input[i][[0, 3]] = input[i][[3, 0]]
+    return input
+  
   def XORw(self, w1, w2):
     w = []
     for i in range(4):
@@ -105,6 +139,10 @@ class AES128:
     plus_1 = input_from_mcm % 2
     gf28mul = 0
     input_ = self.decimalToBin(input)
+    if "x" in str(input):
+      input = int(input, 16)
+    else:
+      input = int(input)
     for i in range(time):
       if input_[0] == 0:
         input_.pop(0)
@@ -131,10 +169,24 @@ class AES128:
 
         b[k][i] = gf28mul[0] ^ gf28mul[1] ^ gf28mul[2] ^ gf28mul[3]
     return b.reshape(1, 16).reshape(4, 4, order = "F")
+  
+  def inverseMixColumn(self, input):
+    input = input.reshape(1, 16).reshape(4, 4, order = "F")
+    b = np.zeros((4,4))
+    for k in range(4):
+      for i in range(4):
+        gf28mul = []
+        for j in range(4):
+          gf28mul.append(self.GF_2_8_mul(input[k][j], self.inverseMixColumnMatrix[i][j]))
 
+        b[k][i] = gf28mul[0] ^ gf28mul[1] ^ gf28mul[2] ^ gf28mul[3]
+    return b.reshape(1, 16).reshape(4, 4, order = "F") 
 
-  def addRoundKeys(self):
-    pass
+  def addRoundKeys(self, text, key):
+    ark = []
+    for i in range(4):
+      ark.append(self.XORw(self.binhexToDecimal(text[i]), self.binhexToDecimal(key[i])))
+    return np.array(ark)
   
   def checkPlainText(self, plaintext):
     if len(plaintext) != 16:
@@ -145,7 +197,7 @@ class AES128:
     byte = []
 
     for i in range(len(target)):
-      byte.append(target.encode()[i])
+      byte.append(hex(target.encode()[i]))
 
     return np.array(byte).reshape(4, 4, order = "F")
   
@@ -156,18 +208,25 @@ class AES128:
 
     for i in range(len(w)):
       w_byte = str(w[i])[2::]
+      if len(w_byte) == 1:
+        w_byte = "0" + w_byte
       w[i] = self.sbox[self.hexToDecimal(w_byte[0])][self.hexToDecimal(w_byte[1])]
 
-    print(np.array([self.roundConstant[round], 0, 0, 0]))
-    print(type(w[0]))
+    t = [int(w[0]), int(w[1]), int(w[2]), int(w[3])]
 
-    return self.XORw(w, np.array([self.roundConstant[round], 0, 0, 0]))
+    return self.XORw(t, np.array([self.roundConstant[round], 0, 0, 0]))
   
   def binhexToDecimal(self, input):
-    temp = []
-    for i in range(len(input)):
-      temp.append(int(input[i], 16))
-    return np.array(temp)
+    if "x" in str(input[0]):
+      temp = []
+      for i in range(len(input)):
+        temp.append(int(input[i], 16))
+      return np.array(temp)
+    else:
+      temp = []
+      for i in range(len(input)):
+        temp.append(int(input[i]))
+      return temp
 
   def keySchedulingPart(self, key, round):
     w0 = np.array([key[0][0], key[1][0], key[2][0], key[3][0]])
@@ -175,46 +234,80 @@ class AES128:
     w2 = np.array([key[0][2], key[1][2], key[2][2], key[3][2]])
     w3 = np.array([key[0][3], key[1][3], key[2][3], key[3][3]])
 
-    print(w3)
+    w4 = self.XORw(self.binhexToDecimal(w0), self.binhexToDecimal(self.g(w3, round - 1)))
+    w5 = self.XORw(self.binhexToDecimal(w4), self.binhexToDecimal(w1))
+    w6 = self.XORw(self.binhexToDecimal(w5), self.binhexToDecimal(w2))
+    w7 = self.XORw(self.binhexToDecimal(w6), self.binhexToDecimal(w3))
 
-    print(self.binhexToDecimal(self.g(w3, round)))
-
-    # w4 = self.XORw(self.binhexToDecimal(w0), self.binhexToDecimal(self.g(w3, round)))
-    # # w5 = self.XORw(self.binhexToDecimal(w4), self.binhexToDecimal(w1))
-    # # w6 = self.XORw(self.binhexToDecimal(w5), self.binhexToDecimal(w2))
-    # # w7 = self.XORw(self.binhexToDecimal(w6), self.binhexToDecimal(w3))
-
-    # print(w4)
-
-    # key_next_round = np.array([w4, w5, w6, w7]).reshape(1, 16).reshape(4, 4, order = "F")
-
-    # return w4, w5, w6, w7
-  
-  def keySchedulingAll(self, key):
-    pass
-
+    return np.array([w4, w5, w6, w7]).reshape(1, 16).reshape(4, 4, order = "F")
 
   def encrypt(self, key, plaintext):
     key_matrix = self.reshape(key)
     plaintext_matrix = self.reshape(plaintext)
+    W = []
 
-    cipher_text = plaintext_matrix
-    cipher_text =  self.mixColumn(self.shiftRows(self.subBytes(cipher_text)))
-    print(cipher_text)
+    cipher_text = self.addRoundKeys(plaintext_matrix, key_matrix)
+    key_matrix = self.keySchedulingPart(key_matrix, 1)
+    W.append(key_matrix)
+  
+    # for i in range(1, 10):
+    for i in range(1, 2):
+      cipher_text =  self.addRoundKeys(self.mixColumn(self.shiftRows(self.subBytes(cipher_text))), key_matrix)
+      key_matrix = self.keySchedulingPart(key_matrix, i + 1)
 
-    # print(self.keySchedulingPart(key_matrix, 1))
+    cipher_text =  self.addRoundKeys(self.shiftRows(self.subBytes(cipher_text)), key_matrix)
+      
+    cipher_text = cipher_text.reshape(1, 16)[0]
 
-    # self.mixColumn(cipher_text)
-    # print(plaintext_matrix)
-    # print(self.subBytes(plaintext_matrix))
-    # print(self.mixColumnMatrix)
+    print(W)
+    
+    return ''.join([chr(int(ct, 16)) for ct in cipher_text])
 
 
   def decrypt(self, key, ciphertext):
-    pass
+    key_matrix = self.reshape(key)
+    ciphertext_matrix = self.reshape(ciphertext)
+
+    plaintext = ciphertext_matrix
+
+    w0 = np.array([key_matrix[0][0], key_matrix[1][0], key_matrix[2][0], key_matrix[3][0]])
+    w1 = np.array([key_matrix[0][1], key_matrix[1][1], key_matrix[2][1], key_matrix[3][1]])
+    w2 = np.array([key_matrix[0][2], key_matrix[1][2], key_matrix[2][2], key_matrix[3][2]])
+    w3 = np.array([key_matrix[0][3], key_matrix[1][3], key_matrix[2][3], key_matrix[3][3]])
+
+    W = [np.array([w0, w1, w2, w3])]
+    for i in range(1):
+      key_matrix = self.keySchedulingPart(key_matrix, i + 1)
+      W.append(key_matrix)
+
+    print(W)
+
+    plaintext = self.inverseSubBytes(self.shiftRows(self.addRoundKeys(plaintext, W[1])))
+
+    for i in range(1, 0, -1):
+      plaintext = self.inverseSubBytes(self.inverseShiftRows(self.inverseMixColumn(self.addRoundKeys(plaintext, W[i]))))
+
+    # plaintext = self.addRoundKeys(plaintext, W[0]).reshape(1, 16)[0]
+
+    # return ''.join([chr(int(ct, 16)) for ct in plaintext])
+
+
+
+    # W.append(key_matrix)
+
+    # print(key_matrix)
+
+    
+
 
 plaintext = "IamPhucnicetosee"
 key = "abcabcabcabcabcx"
 
+
 aes128 = AES128()
-aes128.encrypt(key, plaintext)
+
+ciphertext = aes128.encrypt(key, plaintext)
+
+print(ciphertext, len(ciphertext))
+
+print(aes128.decrypt(key, ciphertext))
