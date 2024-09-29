@@ -1,4 +1,3 @@
 import numpy as np
 
-print(type(hex(10)))
-
+print(np.polydiv([3,5,2], [2,1])[1])
